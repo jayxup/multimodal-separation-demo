@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multimodal Speaker Separation Demo</title>
     <style>
-        /* General Document Styling */
         body { 
             margin: 0; 
             padding: 40px 20px;
@@ -22,132 +21,63 @@
             font-size: 28px;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             max-width: 900px;
         }
 
-        /* Abstract Styling */
-        .abstract-section {
-            max-width: 900px;
-            margin-bottom: 40px;
-            text-align: justify;
-            line-height: 1.6;
-            color: #444;
-            background-color: #ffffff;
-            padding: 25px 35px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border: 1px solid #e1e8ed;
-        }
-
-        .abstract-title {
-            font-weight: 600;
-            font-size: 18px;
-            color: #2c3e50;
-            display: inline;
-        }
-
-        .demo-heading {
+        .section-heading {
             text-align: center;
             font-size: 24px;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 30px;
+            margin-top: 40px;
+            margin-bottom: 25px;
             width: 100%;
             border-bottom: 2px solid #bdc3c7;
             padding-bottom: 10px;
             max-width: 1100px;
         }
 
-        /* Audio Grid Layout */
-        .audio-section {
+        /* --- SIDE BY SIDE DEMO LAYOUT --- */
+        .demos-row {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap; /* Wraps to vertical on small screens */
+            justify-content: center;
+            gap: 30px;
             width: 100%;
-            max-width: 1100px;
-            margin-bottom: 60px;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 20px;
-            align-items: center;
+            max-width: 1600px;
+            margin-bottom: 50px;
         }
 
-        /* Individual Audio Block Styling */
-        .audio-block {
+        .scene-container-wrapper {
+            flex: 1; /* Takes up equal space in the row */
+            min-width: 400px; /* Prevents squishing too much */
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border: 1px solid #e1e8ed;
         }
 
-        /* Center the single 'Input Mixture' row */
-        .span-all {
-            grid-column: 1 / -1;
-            max-width: 350px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .row-label {
+        .demo-title {
+            color: #2c3e50;
+            font-size: 20px;
             font-weight: 600;
-            font-size: 16px;
-            text-align: right;
-            padding-right: 20px;
-            color: #34495e;
-        }
-
-        .audio-title {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #555;
+            margin-bottom: 5px;
             text-align: center;
         }
 
-        /* Waveform Image Container */
-        .waveform-container {
-            width: 100%;
-            height: 60px;
-            background-color: #1a1a1a; 
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .waveform-container img {
-            width: 100%;
-            height: 100%;
-            /* CHANGED TO CONTAIN: Ensures the whole waveform fits without trimming */
-            object-fit: contain; 
-            position: relative;
-            z-index: 2;
-        }
-
-        audio {
-            width: 100%;
-            height: 35px;
-            outline: none;
-        }
-
-        /* 3D Scene Styling */
-        .scene-header {
-            text-align: center;
+        .demo-subtitle {
+            color: #666; 
+            font-size: 15px; 
             margin-bottom: 15px;
+            text-align: center;
+            height: 40px; /* Aligns heights if text wraps */
         }
-        
-        .scene-header h2 { margin: 0 0 5px 0; font-size: 22px; color: #2c3e50; }
-        .scene-header p { margin: 0; color: #666; font-size: 14px; }
 
-        #canvas-container { 
-            width: 800px; 
+        .canvas-container { 
+            width: 100%; /* Responsive width instead of fixed 800px */
             height: 500px; 
-            background-color: #1a1a1a; 
+            background-color: #b0bec5; 
             border-radius: 12px; 
             box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
             position: relative; 
@@ -155,145 +85,221 @@
             border: 2px solid #bdc3c7;
         }
         
-        #ui { 
+        .ui-overlay { 
             position: absolute; 
             bottom: 15px; 
             width: 100%; 
             text-align: center; 
-            color: rgba(255,255,255,0.7); 
+            color: rgba(255,255,255,0.9); 
             font-size: 14px;
+            font-weight: 600;
             pointer-events: none; 
+            z-index: 5;
+            text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
         }
+
+        /* Overlays for Demo 1 */
+        .play-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10; transition: opacity 0.3s ease;
+        }
+
+        .play-btn {
+            padding: 15px 35px; font-size: 20px; cursor: pointer;
+            border-radius: 50px; border: none; background: #2ecc71;
+            color: white; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            transition: transform 0.2s, background 0.2s;
+            display: flex; align-items: center; gap: 10px;
+            pointer-events: auto;
+        }
+
+        .play-btn:hover { transform: scale(1.05); background: #27ae60; }
+
+        .pause-btn { background: #e74c3c; box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); font-size: 16px; padding: 10px 25px; }
+        .pause-btn:hover { background: #c0392b; }
+
+        .active-controls-overlay {
+            position: absolute; bottom: 20px; width: 100%;
+            display: flex; justify-content: center; z-index: 10; pointer-events: none;
+        }
+
+        /* Audio Grid Layouts */
+        .stage-title {
+            text-align: center; font-size: 20px; font-weight: 600; color: #34495e;
+            margin-top: 40px; margin-bottom: 20px; width: 100%;
+        }
+
+        .audio-section { width: 100%; max-width: 1100px; margin-bottom: 40px; display: flex; flex-direction: column; }
+        .audio-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        .audio-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 850px; margin: 0 auto; }
+        .audio-row-1 { display: flex; justify-content: center; width: 100%; }
+        .audio-row-1 .audio-block { width: 100%; max-width: 350px; }
+
+        .audio-block {
+            display: flex; flex-direction: column; align-items: center;
+            background: #ffffff; padding: 15px; border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e1e8ed;
+        }
+
+        .audio-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: #555; text-align: center; }
+
+        .waveform-container {
+            width: 100%; height: 60px; background-color: #1a1a1a; 
+            margin-bottom: 10px; display: flex; justify-content: center;
+            align-items: center; border-radius: 4px; overflow: hidden;
+        }
+        .waveform-container img { width: 100%; height: 100%; object-fit: contain; }
+        audio { width: 100%; height: 35px; outline: none; }
+
+        /* Abstract & Diagram Styling */
+        .content-card {
+            max-width: 900px; margin-bottom: 40px; background-color: #ffffff;
+            padding: 25px 35px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e1e8ed;
+        }
+        .abstract-text { text-align: justify; line-height: 1.6; color: #444; }
+        .abstract-label { font-weight: 600; font-size: 18px; color: #2c3e50; display: inline; }
+        .diagram-container { width: 100%; max-width: 950px; text-align: center; margin-top: 20px; }
+        .diagram-container img { width: 100%; height: auto; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
     <h1 class="main-title">Multimodal Speaker Separation in Audio-Visual Scene using Spherical Microphone Array</h1>
+        
+    <div class="demos-row">
+        <div class="scene-container-wrapper">
+            <div class="demo-title">Environment Baseline</div>
+            <div class="demo-subtitle">Click Play to hear the unseparated Ground Truth mixture of all speakers.</div>
+            
+            <div id="canvas-container-1" class="canvas-container">
+                <div id="play-overlay" class="play-overlay">
+                    <button id="play-btn-1" class="play-btn">▶ Play Mixture</button>
+                </div>
+                <div id="pause-overlay" class="active-controls-overlay" style="display: none;">
+                    <button id="pause-btn-1" class="play-btn pause-btn">⏸ Pause Audio</button>
+                </div>
+                <div class="ui-overlay">Meeting room environment</div>
+            </div>
+        </div>
 
-    <div class="abstract-section">
-        <span class="abstract-title">Abstract — </span> 
-        Separating overlapping speakers in meeting-room environments remains challenging due to reverberation, source ambiguity, and dynamic speaker interactions. In existing systems, audio-only approaches degrade under adverse acoustic conditions, while audio-visual methods predominantly rely on explicit geometric calibration or depth estimation. This paper proposes a geometry-aware audio-visual speaker separation framework that addresses these limitations by integrating 360-degree visual perception with spherical microphone array (SMA) processing. A co-located 360-degree camera and SMA provide natural audio-visual alignment without explicit calibration. The visual front-end employs the YOLOv8l-pose on equirectangular video to extract speaker directions via nose-keypoint centroids with a confidence-gated bounding-box fallback. These directions steer a null-steering beamformer in 3 dimensional space, followed by SepFormer-based neural speech separation. Visual direction-extraction on the STARSS23 dataset achieves a mean angular error of 2.218&deg; with 96.62% of detections within 5&deg;. The full pipeline achieves an average SDR of 18.27 dB and PESQ of 3.093 in the multiple speaker case.
+        <div class="scene-container-wrapper">
+            <div class="demo-title">Reconstructed Scene after Multimodal Speaker Separation</div>
+            <div class="demo-subtitle">Click on any speaker's body to hear their cleanly separated audio stream.</div>
+            
+            <div id="canvas-container-2" class="canvas-container">
+                <div class="ui-overlay">Drag to rotate | Scroll to zoom</div>
+            </div>
+        </div>
     </div>
-
-    <h2 class="demo-heading">Demo</h2>
 
     <div class="audio-section">
         
-        <div class="audio-block">
-            <div class="audio-title">Ground Truth Mixture</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_01_GT_Mixture.png" alt="Ground Truth Mixture Waveform">
+        <div class="stage-title" style="margin-top: 10px;">Ground Truth Reference</div>
+        <div class="audio-row-4">
+            <div class="audio-block">
+                <div class="audio-title">Ground Truth Mixture</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_01_GT_Mixture.png"></div>
+                <audio controls src="audio/0000123_rigid_01_GT_Mixture.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_01_GT_Mixture.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 1 Ground Truth</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_02_GT_S1.png" alt="Speaker 1 Ground Truth Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 1 Ground Truth</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_02_GT_S1.png"></div>
+                <audio controls src="audio/0000123_rigid_02_GT_S1.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_02_GT_S1.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 2 Ground Truth</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_02_GT_S2.png" alt="Speaker 2 Ground Truth Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 2 Ground Truth</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_02_GT_S2.png"></div>
+                <audio controls src="audio/0000123_rigid_02_GT_S2.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_02_GT_S2.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 3 Ground Truth</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_02_GT_S3.png" alt="Speaker 3 Ground Truth Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 3 Ground Truth</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_02_GT_S3.png"></div>
+                <audio controls src="audio/0000123_rigid_02_GT_S3.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_02_GT_S3.wav"></audio>
         </div>
 
-        <div class="row-label">Convolution with RIR</div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 1</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_03_RIR_S1.png" alt="Speaker 1 RIR Waveform">
+        <div class="stage-title">Convolution with RIR</div>
+        <div class="audio-row-3">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 1</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_03_RIR_S1.png"></div>
+                <audio controls src="audio/0000123_rigid_03_RIR_S1.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_03_RIR_S1.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 2</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_03_RIR_S2.png" alt="Speaker 2 RIR Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 2</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_03_RIR_S2.png"></div>
+                <audio controls src="audio/0000123_rigid_03_RIR_S2.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_03_RIR_S2.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 3</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_03_RIR_S3.png" alt="Speaker 3 RIR Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 3</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_03_RIR_S3.png"></div>
+                <audio controls src="audio/0000123_rigid_03_RIR_S3.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_03_RIR_S3.wav"></audio>
         </div>
 
-        <div class="audio-block span-all">
-            <div class="audio-title">Input Mixture to System</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_04_Input_Mixture.png" alt="Input Mixture Waveform">
+        <div class="stage-title">Input Mixture to Proposed System</div>
+        <div class="audio-row-1">
+            <div class="audio-block">
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_04_Input_Mixture.png"></div>
+                <audio controls src="audio/0000123_rigid_04_Input_Mixture.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_04_Input_Mixture.wav"></audio>
         </div>
 
-        <div class="row-label">Beamformed</div>
-        <div class="audio-block">
-            <div class="audio-title">Towards Speaker 1</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_05_Beamformed_S1.png" alt="Beamformed Speaker 1 Waveform">
+        <div class="stage-title">Beamformer Output</div>
+        <div class="audio-row-3">
+            <div class="audio-block">
+                <div class="audio-title">Towards Speaker 1</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_05_Beamformed_S1.png"></div>
+                <audio controls src="audio/0000123_rigid_05_Beamformed_S1.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_05_Beamformed_S1.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Towards Speaker 2</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_05_Beamformed_S2.png" alt="Beamformed Speaker 2 Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Towards Speaker 2</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_05_Beamformed_S2.png"></div>
+                <audio controls src="audio/0000123_rigid_05_Beamformed_S2.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_05_Beamformed_S2.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Towards Speaker 3</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_05_Beamformed_S3.png" alt="Beamformed Speaker 3 Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Towards Speaker 3</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_05_Beamformed_S3.png"></div>
+                <audio controls src="audio/0000123_rigid_05_Beamformed_S3.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_05_Beamformed_S3.wav"></audio>
         </div>
 
-        <div class="row-label">Final Output</div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 1 Extracted</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_06_Final_S1.png" alt="Final Extracted Speaker 1 Waveform">
+        <div class="stage-title">Final Separated Output</div>
+        <div class="audio-row-3">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 1 Extracted</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_06_Final_S1.png"></div>
+                <audio controls src="audio/0000123_rigid_06_Final_S1.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_06_Final_S1.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 2 Extracted</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_06_Final_S2.png" alt="Final Extracted Speaker 2 Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 2 Extracted</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_06_Final_S2.png"></div>
+                <audio controls src="audio/0000123_rigid_06_Final_S2.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_06_Final_S2.wav"></audio>
-        </div>
-        <div class="audio-block">
-            <div class="audio-title">Speaker 3 Extracted</div>
-            <div class="waveform-container">
-                <img src="waveforms/0000123_rigid_06_Final_S3.png" alt="Final Extracted Speaker 3 Waveform">
+            <div class="audio-block">
+                <div class="audio-title">Speaker 3 Extracted</div>
+                <div class="waveform-container"><img src="waveforms/0000123_rigid_06_Final_S3.png"></div>
+                <audio controls src="audio/0000123_rigid_06_Final_S3.wav"></audio>
             </div>
-            <audio controls src="audio/0000123_rigid_06_Final_S3.wav"></audio>
         </div>
-
     </div>
 
-    <div class="scene-header">
-        <h2>Interactive Room Visualization</h2>
-        <p>Click on a participant's head to hear their spatial audio stream. Drag to rotate the room.</p>
+    <h2 class="section-heading">Abstract</h2>
+    <div class="content-card">
+        <div class="abstract-text">
+            <span class="abstract-label">Abstract — </span> 
+            Separating overlapping speakers in meeting-room environments remains challenging due to reverberation, source ambiguity, and dynamic speaker interactions. In existing systems, audio-only approaches degrade under adverse acoustic conditions, while audio-visual methods predominantly rely on explicit geometric calibration or depth estimation. This paper proposes a geometry-aware audio-visual speaker separation framework that addresses these limitations by integrating 360-degree visual perception with spherical microphone array (SMA) processing. A co-located 360-degree camera and SMA provide natural audio-visual alignment without explicit calibration. The visual front-end employs the YOLOv8l-pose on equirectangular video to extract speaker directions via nose-keypoint centroids with a confidence-gated bounding-box fallback. These directions steer a null-steering beamformer in 3 dimensional space, followed by SepFormer-based neural speech separation. Visual direction-extraction on the STARSS23 dataset achieves a mean angular error of 2.218&deg; with 96.62% of detections within 5&deg;. The full pipeline achieves an average SDR of 18.27 dB and PESQ of 3.093 in the multiple speaker case.
+        </div>
     </div>
 
-    <div id="canvas-container">
-        <div id="ui">32-Channel Array & 360 Camera View</div>
+    <h2 class="section-heading">System Architecture</h2>
+    <div class="diagram-container">
+        <img src="block-diagram-200-zoom.png" alt="System Block Diagram">
+        <p style="color: #666; font-size: 14px; margin-top: 10px;">Block diagram of the proposed multimodal speaker separation framework.</p>
     </div>
 
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
@@ -310,210 +316,336 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        const container = document.getElementById('canvas-container');
-        let containerWidth = container.clientWidth;
-        let containerHeight = container.clientHeight;
-
-        // 1. SETUP SCENE
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x2c3e50); 
-        scene.fog = new THREE.Fog(0x2c3e50, 4, 15); 
-
-        const camera = new THREE.PerspectiveCamera(60, containerWidth / containerHeight, 0.1, 1000);
-        camera.position.set(0, 3.5, 5); 
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(containerWidth, containerHeight);
-        renderer.shadowMap.enabled = true; 
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        container.appendChild(renderer.domElement);
-
-        // 2. CONTROLS
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.maxPolarAngle = Math.PI / 2 - 0.05; 
-        controls.minDistance = 2; 
-        controls.maxDistance = 10; 
-        controls.target.set(0, 1.6, 0); 
-
-        // 3. LIGHTING
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-        scene.add(ambientLight);
-
-        const overheadLight = new THREE.PointLight(0xfff4e5, 0.9);
-        overheadLight.position.set(0, 5, 0);
-        overheadLight.castShadow = true;
-        overheadLight.shadow.mapSize.width = 1024;
-        overheadLight.shadow.mapSize.height = 1024;
-        scene.add(overheadLight);
-
-        // 4. BUILD THE ROOM
-        const floorGeometry = new THREE.PlaneGeometry(15, 15);
-        const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x7f8c8d, roughness: 0.9 });
-        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.rotation.x = -Math.PI / 2; 
-        floor.receiveShadow = true;
-        scene.add(floor);
-
-        const tableGroup = new THREE.Group();
-        const tableGeometry = new THREE.BoxGeometry(5, 0.15, 3);
-        const tableMaterial = new THREE.MeshStandardMaterial({ color: 0x5c3a21, roughness: 0.4, metalness: 0.1 });
-        const tableTop = new THREE.Mesh(tableGeometry, tableMaterial);
-        tableTop.position.set(0, 1.5, 0); 
-        tableTop.castShadow = true;
-        tableTop.receiveShadow = true;
-        tableGroup.add(tableTop);
-
-        const legGeometry = new THREE.CylinderGeometry(0.4, 0.6, 1.4, 32);
-        const legMaterial = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 });
-        const leg = new THREE.Mesh(legGeometry, legMaterial);
-        leg.position.set(0, 0.7, 0);
-        leg.castShadow = true;
-        tableGroup.add(leg);
-        scene.add(tableGroup);
-
-        // 5. BUILD THE HARDWARE
-        const tableTopY = 1.575;
-
-        const standBaseGeo = new THREE.CylinderGeometry(0.15, 0.2, 0.05, 32);
-        const hardwareMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.6, roughness: 0.3 });
-        const standBase = new THREE.Mesh(standBaseGeo, hardwareMat);
-        standBase.position.set(0, tableTopY + 0.025, 0);
-        standBase.castShadow = true;
-        scene.add(standBase);
-
-        const poleGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.4, 16);
-        const pole = new THREE.Mesh(poleGeo, hardwareMat);
-        pole.position.set(0, tableTopY + 0.2, 0);
-        pole.castShadow = true;
-        scene.add(pole);
-
-        const eigenGroup = new THREE.Group();
-        const eigenRadius = 0.12;
-        const eigenCenterY = tableTopY + 0.4 + eigenRadius; 
-        eigenGroup.position.set(0, eigenCenterY, 0);
-
-        const eigenSphereGeo = new THREE.SphereGeometry(eigenRadius, 32, 32);
-        const eigenSphereMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6, metalness: 0.3 });
-        const eigenSphere = new THREE.Mesh(eigenSphereGeo, eigenSphereMat);
-        eigenSphere.castShadow = true;
-        eigenGroup.add(eigenSphere);
-
-        const numCapsules = 32;
-        const capsuleRadius = 0.015;
-        const capsuleGeo = new THREE.SphereGeometry(capsuleRadius, 8, 8);
-        const capsuleMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.8, roughness: 0.2 });
-        const phi = Math.PI * (3 - Math.sqrt(5)); 
-        
-        for (let i = 0; i < numCapsules; i++) {
-            const y = 1 - (i / (numCapsules - 1)) * 2; 
-            const radiusAtY = Math.sqrt(1 - y * y); 
-            const theta = phi * i; 
-            const x = Math.cos(theta) * radiusAtY;
-            const z = Math.sin(theta) * radiusAtY;
-            
-            const capsule = new THREE.Mesh(capsuleGeo, capsuleMat);
-            capsule.position.set(x * eigenRadius, y * eigenRadius, z * eigenRadius);
-            eigenGroup.add(capsule);
-        }
-        scene.add(eigenGroup);
-
-        const camGroup = new THREE.Group();
-        camGroup.position.set(0, eigenCenterY + eigenRadius + 0.12, 0); 
-
-        const camBodyGeo = new THREE.BoxGeometry(0.06, 0.22, 0.025);
-        const camBodyMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.5, metalness: 0.2 });
-        const camBody = new THREE.Mesh(camBodyGeo, camBodyMat);
-        camBody.castShadow = true;
-        camGroup.add(camBody);
-
-        const lensGeo = new THREE.SphereGeometry(0.02, 16, 16);
-        const lensMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.05, metalness: 0.9 });
-        
-        const frontLens = new THREE.Mesh(lensGeo, lensMat);
-        frontLens.position.set(0, 0.06, 0.012); 
-        frontLens.scale.set(1, 1, 0.5); 
-        camGroup.add(frontLens);
-
-        const backLens = new THREE.Mesh(lensGeo, lensMat);
-        backLens.position.set(0, 0.06, -0.012);
-        backLens.scale.set(1, 1, 0.5);
-        camGroup.add(backLens);
-
-        const camStemGeo = new THREE.CylinderGeometry(0.01, 0.01, 0.05, 8);
-        const camStem = new THREE.Mesh(camStemGeo, hardwareMat);
-        camStem.position.set(0, -0.12, 0);
-        camGroup.add(camStem);
-
-        scene.add(camGroup);
-
-        // 6. CREATE THE PARTICIPANTS 
-        const headGeometry = new THREE.SphereGeometry(0.4, 32, 32);
-        const interactableObjects = [];
-
-        function createHead(color, x, y, z, audioFileName) {
-            const material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.3, metalness: 0.1 });
-            const head = new THREE.Mesh(headGeometry, material);
-            head.position.set(x, y, z);
-            head.castShadow = true;
-            head.userData = { audioPath: audioFileName, originalScale: head.scale.clone() };
-            scene.add(head);
-            interactableObjects.push(head);
-            return head;
-        }
-
-        // Paths point to the 'audio/' folder
-        createHead(0xe74c3c, 0, 2.3, -1.8, 'audio/0000123_rigid_06_Final_S1.wav'); 
-        createHead(0x3498db, -2.5, 2.3, 0, 'audio/0000123_rigid_06_Final_S2.wav'); 
-        createHead(0x2ecc71, 2.5, 2.3, 0, 'audio/0000123_rigid_06_Final_S3.wav');
-
-        // 7. CLICK DETECTION
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        let currentAudio = null;
-        let currentlyPulsingHead = null;
-
-        container.addEventListener('pointerdown', (event) => {
-            const rect = renderer.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(interactableObjects);
-
-            if (intersects.length > 0) {
-                const clickedHead = intersects[0].object;
-                const fileToPlay = clickedHead.userData.audioPath;
-
-                if (currentAudio) {
-                    currentAudio.pause();
-                    currentAudio.currentTime = 0;
-                }
-                
-                if (currentlyPulsingHead) {
-                    currentlyPulsingHead.scale.copy(currentlyPulsingHead.userData.originalScale);
-                }
-
-                currentAudio = new Audio(fileToPlay);
-                currentAudio.play().catch(e => console.error("Audio playback failed.", e));
-
-                clickedHead.scale.set(1.3, 1.3, 1.3);
-                currentlyPulsingHead = clickedHead;
-                
-                currentAudio.onended = () => {
-                    clickedHead.scale.copy(clickedHead.userData.originalScale);
-                    currentlyPulsingHead = null;
-                };
+        // --- GLOBAL AUDIO MANAGER ---
+        window.globalActiveAudio = null;
+        function playGlobalAudio(src) {
+            if (window.globalActiveAudio) {
+                window.globalActiveAudio.pause();
+                window.globalActiveAudio.currentTime = 0;
             }
-        });
-
-        // 8. ANIMATION LOOP
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update(); 
-            renderer.render(scene, camera);
+            window.globalActiveAudio = new Audio(src);
+            window.globalActiveAudio.play();
+            return window.globalActiveAudio;
         }
-        animate();
+
+        const sceneBgColor = 0xb0bec5;
+
+        // --- SHARED 3D ENVIRONMENT BUILDER ---
+        function buildEnvironment(scene) {
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial({ color: 0x8898aa }));
+            floor.rotation.x = -Math.PI / 2;
+            floor.receiveShadow = true;
+            scene.add(floor);
+
+            const table = new THREE.Mesh(new THREE.BoxGeometry(4, 0.15, 3), new THREE.MeshStandardMaterial({ color: 0x5c3a21, roughness: 0.4 }));
+            table.position.y = 1.5;
+            table.receiveShadow = true;
+            table.castShadow = true;
+            scene.add(table);
+
+            const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 1.4, 32), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+            leg.position.y = 0.7;
+            scene.add(leg);
+
+            // Hardware Frustum Stand
+            const topY = 1.575;
+            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.09, 0.4, 32), new THREE.MeshStandardMaterial({ color: 0x222222 }));
+            pole.position.y = topY + 0.2;
+            scene.add(pole);
+
+            // Eigenmike
+            const eigenGroup = new THREE.Group();
+            const eigenRadius = 0.15;
+            const eigenCenterY = topY + 0.4 + eigenRadius; 
+            eigenGroup.position.set(0, eigenCenterY, 0);
+
+            const eigenSphere = new THREE.Mesh(
+                new THREE.SphereGeometry(eigenRadius, 32, 32), 
+                new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8 })
+            );
+            eigenSphere.castShadow = true;
+            eigenGroup.add(eigenSphere);
+
+            const numCapsules = 32;
+            const capsuleGeo = new THREE.CylinderGeometry(0.028, 0.028, 0.005, 16);
+            const capsuleMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.5 });
+            const phi = Math.PI * (3 - Math.sqrt(5)); 
+            
+            for (let i = 0; i < numCapsules; i++) {
+                const y = 1 - (i / (numCapsules - 1)) * 2; 
+                const radiusAtY = Math.sqrt(1 - y * y); 
+                const theta = phi * i; 
+                const x = Math.cos(theta) * radiusAtY;
+                const z = Math.sin(theta) * radiusAtY;
+                
+                const capsule = new THREE.Mesh(capsuleGeo, capsuleMat);
+                const pos = new THREE.Vector3(x, y, z).normalize().multiplyScalar(eigenRadius);
+                capsule.position.copy(pos);
+                
+                const target = pos.clone().add(pos.clone().normalize());
+                capsule.lookAt(target);
+                capsule.rotateX(Math.PI / 2); 
+                eigenGroup.add(capsule);
+            }
+            scene.add(eigenGroup);
+
+            // 360 Camera
+            const camGroup = new THREE.Group();
+            camGroup.position.set(0, eigenCenterY + eigenRadius + 0.15, 0); 
+
+            const camBody = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.25, 0.035), new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.4 }));
+            camBody.castShadow = true;
+            camGroup.add(camBody);
+
+            const lensMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.1, metalness: 0.8 });
+            const frontLens = new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), lensMat);
+            frontLens.position.set(0, 0.07, 0.0175); 
+            frontLens.scale.set(1, 1, 0.4); 
+            camGroup.add(frontLens);
+
+            const backLens = new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), lensMat);
+            backLens.position.set(0, 0.07, -0.0175);
+            backLens.scale.set(1, 1, 0.4);
+            camGroup.add(backLens);
+
+            const camStem = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.08, 8), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+            camStem.position.set(0, -0.15, 0);
+            camGroup.add(camStem);
+
+            scene.add(camGroup);
+        }
+
+        // ==========================================
+        // INITIALIZE DEMO 1 (BASELINE MIXTURE)
+        // ==========================================
+        function initDemo1() {
+            const container = document.getElementById('canvas-container-1');
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(sceneBgColor);
+            scene.fog = new THREE.Fog(sceneBgColor, 5, 18);
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
+            camera.position.set(0, 5, 8);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.target.set(0, 1.3, 0);
+            controls.maxPolarAngle = Math.PI / 2 - 0.05; 
+            controls.enabled = false; 
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+            const pLight = new THREE.PointLight(0xfff4e5, 0.9);
+            pLight.position.set(0, 6, 0);
+            pLight.castShadow = true;
+            scene.add(pLight);
+
+            buildEnvironment(scene);
+
+            function addStaticSpeaker(name, color, skinColor, x, y, z) {
+                const group = new THREE.Group();
+                const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 1.6, 16), new THREE.MeshStandardMaterial({ color: color }));
+                torso.position.y = 0.8;
+                torso.castShadow = true;
+                group.add(torso);
+
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), new THREE.MeshStandardMaterial({ color: skinColor }));
+                head.position.y = 1.95;
+                head.castShadow = true;
+                group.add(head);
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 256; canvas.height = 64;
+                ctx.fillStyle = 'rgba(0,0,0,0.8)';
+                ctx.fillRect(0, 0, 256, 64);
+                ctx.font = 'Bold 36px Arial';
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.fillText(name, 128, 45);
+                
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas) }));
+                sprite.position.y = 2.6;
+                sprite.scale.set(1.4, 0.35, 1);
+                group.add(sprite);
+
+                group.position.set(x, y, z);
+                scene.add(group);
+            }
+
+            addStaticSpeaker("Speaker 1", 0x4CAF50, 0xffdbac, -2.5, 0.0, -2.0); 
+            addStaticSpeaker("Speaker 2", 0xFF9800, 0xe0ac69, -2.5, 0.0, 2.5);  
+            addStaticSpeaker("Speaker 3", 0x2196F3, 0x8d5524, 2.5, 0.0, -2.0);  
+
+            const playBtn = document.getElementById('play-btn-1');
+            const overlay = document.getElementById('play-overlay');
+            const pauseOverlay = document.getElementById('pause-overlay');
+            const pauseBtn = document.getElementById('pause-btn-1');
+
+            function resetToPlay() {
+                overlay.style.display = 'flex';
+                setTimeout(() => overlay.style.opacity = '1', 10);
+                controls.enabled = false;
+                pauseOverlay.style.display = 'none';
+            }
+
+            playBtn.addEventListener('click', () => {
+                const audio = playGlobalAudio('audio/0000123_rigid_01_GT_Mixture.wav');
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 300);
+                controls.enabled = true;
+                pauseOverlay.style.display = 'flex';
+                audio.onended = () => { resetToPlay(); };
+            });
+
+            pauseBtn.addEventListener('click', () => {
+                if (window.globalActiveAudio) window.globalActiveAudio.pause();
+                resetToPlay();
+            });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        // ==========================================
+        // INITIALIZE DEMO 2 (PROPOSED EXTRACTED)
+        // ==========================================
+        function initDemo2() {
+            const container = document.getElementById('canvas-container-2');
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(sceneBgColor);
+            scene.fog = new THREE.Fog(sceneBgColor, 5, 18);
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
+            camera.position.set(0, 5, 8);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.target.set(0, 1.3, 0);
+            controls.maxPolarAngle = Math.PI / 2 - 0.05; 
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+            const pLight = new THREE.PointLight(0xfff4e5, 0.9);
+            pLight.position.set(0, 6, 0);
+            pLight.castShadow = true;
+            scene.add(pLight);
+
+            buildEnvironment(scene);
+            const interactableObjects = [];
+
+            // Simple text-only label creation
+            function createInteractiveSpeaker(name, color, skinColor, x, y, z, audioPath) {
+                const group = new THREE.Group();
+                
+                const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 1.6, 16), new THREE.MeshStandardMaterial({ color: color }));
+                torso.position.y = 0.8;
+                torso.castShadow = true;
+                group.add(torso);
+
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), new THREE.MeshStandardMaterial({ color: skinColor }));
+                head.position.y = 1.95;
+                head.castShadow = true;
+                group.add(head);
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 256; canvas.height = 64;
+                ctx.fillStyle = 'rgba(0,0,0,0.85)';
+                ctx.fillRect(0, 0, 256, 64);
+                ctx.font = 'Bold 36px Arial';
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.fillText(name, 128, 45);
+                
+                const textSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas) }));
+                textSprite.position.y = 2.6; 
+                textSprite.scale.set(1.4, 0.35, 1);
+                group.add(textSprite);
+
+                group.position.set(x, y, z);
+                group.userData = { audioPath: audioPath, originalScale: group.scale.clone() };
+                scene.add(group);
+
+                head.userData.parentGroup = group; 
+                torso.userData.parentGroup = group;
+                interactableObjects.push(head, torso);
+
+                return group;
+            }
+
+            createInteractiveSpeaker("Speaker 1", 0x4CAF50, 0xffdbac, -2.5, 0.0, -2.0, 'audio/0000123_rigid_06_Final_S1.wav'); 
+            createInteractiveSpeaker("Speaker 2", 0xFF9800, 0xe0ac69, -2.5, 0.0, 2.5, 'audio/0000123_rigid_06_Final_S2.wav');  
+            createInteractiveSpeaker("Speaker 3", 0x2196F3, 0x8d5524, 2.5, 0.0, -2.0, 'audio/0000123_rigid_06_Final_S3.wav');  
+
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            let activeGroup = null;
+
+            container.addEventListener('pointerdown', (e) => {
+                const rect = renderer.domElement.getBoundingClientRect();
+                mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(interactableObjects);
+
+                if (intersects.length > 0) {
+                    const targetGroup = intersects[0].object.userData.parentGroup;
+                    
+                    if (activeGroup) activeGroup.scale.copy(activeGroup.userData.originalScale);
+
+                    const audio = playGlobalAudio(targetGroup.userData.audioPath);
+                    
+                    targetGroup.scale.set(1.15, 1.15, 1.15);
+                    activeGroup = targetGroup;
+
+                    audio.onended = () => {
+                        targetGroup.scale.copy(targetGroup.userData.originalScale);
+                        activeGroup = null;
+                    };
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        initDemo1();
+        initDemo2();
+
     </script>
 </body>
 </html>
