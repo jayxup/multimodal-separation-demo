@@ -18,7 +18,7 @@
 
         .main-title {
             text-align: center;
-            font-size: 35px;
+            font-size: 40px;
             font-weight: 600;
             color: #2c3e50;
             margin-bottom: 30px;
@@ -37,6 +37,7 @@
             padding-bottom: 10px;
             max-width: 1100px;
         }
+
 
         /* --- SIDE BY SIDE DEMO LAYOUT --- */
         .demos-row {
@@ -154,12 +155,39 @@
         }
         .waveform-container img { width: 100%; height: 100%; object-fit: contain; }
         audio { width: 100%; height: 35px; outline: none; }
-
-        /* Abstract & Diagram Styling */
-        .content-card {
-            max-width: 900px; margin-bottom: 40px; background-color: #ffffff;
-            padding: 25px 35px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e1e8ed;
+        /* --- ARCHITECTURE SIDE-BY-SIDE LAYOUT (NO CARD) --- */
+        .architecture-layout {
+            display: flex;
+            flex-direction: row;
+            align-items: center; 
+            justify-content: center;
+            gap: 50px; /* Slightly larger gap to breathe without the card boundary */
+            width: 100%;
+            max-width: 1400px;
+            margin-bottom: 40px;
+            flex-wrap: wrap; 
         }
+
+        /* Text section */
+        .architecture-layout .abstract-content {
+            flex: 1; 
+            min-width: 400px;
+        }
+
+        /* Diagram section */
+        .architecture-layout .diagram-container {
+            flex: 1.5; 
+            min-width: 450px;
+            margin-top: 0;
+        }
+
+        .architecture-layout .diagram-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Keeps the image looking neat */
+        }
+        /* Abstract & Diagram Styling */
         .abstract-text { text-align: justify; line-height: 1.6; color: #444; }
         .abstract-label { font-weight: 600; font-size: 18px; color: #2c3e50; display: inline; }
         .diagram-container { width: 100%; max-width: 950px; text-align: center; margin-top: 20px; }
@@ -287,21 +315,21 @@
             </div>
         </div>
     </div>
+    <h2 class="section-heading">System Architecture</h2>
+    
+    <div class="architecture-layout">
+        <div class="abstract-content">
+            <div class="abstract-text">
+                <span class="abstract-label">Abstract — </span> 
+                Separating overlapping speakers in meeting-room environments remains challenging due to reverberation, source ambiguity, and dynamic speaker interactions. In existing systems, audio-only approaches degrade under adverse acoustic conditions, while audio-visual methods predominantly rely on explicit geometric calibration or depth estimation. This paper proposes a geometry-aware audio-visual speaker separation framework that addresses these limitations by integrating 360-degree visual perception with spherical microphone array (SMA) processing. A co-located 360-degree camera and SMA provide natural audio-visual alignment without explicit calibration. The visual front-end employs the YOLOv8l-pose on equirectangular video to extract speaker directions via nose-keypoint centroids with a confidence-gated bounding-box fallback. These directions steer a null-steering beamformer in 3 dimensional space, followed by SepFormer-based neural speech separation. Visual direction-extraction on the STARSS23 dataset achieves a mean angular error of 2.218&deg; with 96.62% of detections within 5&deg;. The full pipeline achieves an average SDR of 18.27 dB and PESQ of 3.093 in the multiple speaker case.
+            </div>
+        </div>
 
-    <h2 class="section-heading">Abstract</h2>
-    <div class="content-card">
-        <div class="abstract-text">
-            <span class="abstract-label">Abstract — </span> 
-            Separating overlapping speakers in meeting-room environments remains challenging due to reverberation, source ambiguity, and dynamic speaker interactions. In existing systems, audio-only approaches degrade under adverse acoustic conditions, while audio-visual methods predominantly rely on explicit geometric calibration or depth estimation. This paper proposes a geometry-aware audio-visual speaker separation framework that addresses these limitations by integrating 360-degree visual perception with spherical microphone array (SMA) processing. A co-located 360-degree camera and SMA provide natural audio-visual alignment without explicit calibration. The visual front-end employs the YOLOv8l-pose on equirectangular video to extract speaker directions via nose-keypoint centroids with a confidence-gated bounding-box fallback. These directions steer a null-steering beamformer in 3 dimensional space, followed by SepFormer-based neural speech separation. Visual direction-extraction on the STARSS23 dataset achieves a mean angular error of 2.218&deg; with 96.62% of detections within 5&deg;. The full pipeline achieves an average SDR of 18.27 dB and PESQ of 3.093 in the multiple speaker case.
+        <div class="diagram-container">
+            <img src="block-diagram-200-zoom.png" alt="System Block Diagram">
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">Block diagram of the proposed multimodal speaker separation framework.</p>
         </div>
     </div>
-
-    <h2 class="section-heading">System Architecture</h2>
-    <div class="diagram-container">
-        <img src="block-diagram-200-zoom.png" alt="System Block Diagram">
-        <p style="color: #666; font-size: 14px; margin-top: 10px;">Block diagram of the proposed multimodal speaker separation framework.</p>
-    </div>
-
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
     <script type="importmap">
       {
